@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script type="text/javascript" src="./processing.js"></script>
+        <script type="text/javascript" src="./init.js"></script>
+        <script type="application/processing">
+            float radius = 50.0;
+            int x, y, nx, ny;
+            int delay = 16;
+            var wds = [];
+
+            void setup(){
+                size(900, 650);
+                strokeWeight(10);
+                frameRate(15);
+                x = width / 2;
+                y = height / 2;
+                nx = x;
+                ny = y;
+                
+                PFont fontA = loadFont("Arial");
+                textFont(fontA, 32);
+                textAlign(CENTER);
+            }
+
+            void draw(){
+                radius = radius + sin(frameCount/4);
+                x += (nx-x)/delay;
+                y += (ny-y)/delay;
+
+                background(100);
+                fill(0, 121,184);
+                stroke(255);
+                ellipse(x,y,radius,radius);
+                fill(0);
+                if (wds.length > 0){
+                    int angle = TWO_PI / wds.length;
+                    int wrdangle = 0;
+                    for (w=0;w<wds.length;w++){
+                        int dist = wds[w].length * 20.0;
+                        int xx = dist * cos(wrdangle);
+                        int yy = dist * sin(wrdangle);
+                        //console.log(wds.length + ", " + angle + ", " + xx + ", "  + yy );
+                        wrdangle = wrdangle + angle;
+                        smooth();
+                        strokeWeight(1);
+                        stroke(0);
+                        line(x, y, x+xx, y+yy);
+                        fill(255);
+                        text(wds[w], x+xx, x+yy);
+
+                        strokeWeight(5);
+                        point(x+xx,y+yy);
+                    }
+                }
+            }
+
+            void mousePressed(){
+                var url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20thesaurus%20where%20key%3D%22PMrEy9mZefntqwh6iTDz%22%20and%20word%3D%22peace%22%20and%20language%3D%22en_US%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+
+                $.getJSON(url, function(data){ 
+                    var lst = data.query.results.response.list;
+                    for (i=0;i<lst.length;i++){
+                        for (i=0; i<lst.length; i++){
+                            words = lst[i].synonyms.split("|");
+                            for (w=0; w<words.length; w++) {
+                                wds.push(words[w]);
+                                //console.log(wds);
+                            } 
+                        }
+                    }
+                });
+            }
+
+//            void mouseMoved(){
+  //              nx = mouseX;
+    //            ny = mouseY;
+      //      }
+        </script>
+    </head>
+    <body>
+        <canvas width="800px" height="600px"></canvas>
+    </body>
+</html>
