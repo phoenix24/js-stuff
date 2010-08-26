@@ -48,8 +48,13 @@
                 stroke(255);
                 ellipse(x,y,radius,radius);
 
+                drawWords();
+
                 fill(255);
                 text(starting, x, y);
+            }
+
+            function drawWords(){
 
                 for (w=0;w<wds.length;w++){
                     var wrd = wds[w];
