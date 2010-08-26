@@ -5,6 +5,7 @@
         <script type="text/javascript" src="./init.js"></script>
         <script type="application/processing">
             float radius = 50.0;
+            float maxradi = 20;
             int x, y, nx, ny;
             int delay = 16;
             var starting = "peace";
@@ -15,6 +16,7 @@
                 this.radi = 0;
                 this.angle = 0;
                 this.word = "";
+                this.wt = 15;
             }
 
             void setup(){
@@ -53,16 +55,24 @@
                     stroke(0);
                     line(x, y, wrd.x, wrd.y);
 
-                    fill(255);
-                    text(wrd.word, wrd.x, wrd.y);
+                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ) {
+                        rndx = random(-.5, 5);
+                        rndy = random(-.5, 5);
 
-                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < 30.0 ) {
+                        fill(0, 102, 153);
+                        text(wrd.word, wrd.x + rndx, wrd.y + rndy);
+
                         stroke(64,187,128,100);
-                        console.log("mouse in range!!");
-                    }
+                        strokeWeight(20);
+                        point(wrd.x + rndx, wrd.y + rndy);
 
-                    strokeWeight(15);
-                    point(wrd.x, wrd.y);
+                    } else {
+                        fill(255);
+                        text(wrd.word, wrd.x, wrd.y);
+
+                        strokeWeight(15);
+                        point(wrd.x, wrd.y);
+                    }
                 }
             }
 
@@ -70,7 +80,7 @@
 
                 for (w=0;w<wds.length;w++){
                     var wrd = wds[w];
-                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < 30.0 ) {
+                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ) {
                         starting = wrd.word;
                         console.log("word changed : " + starting);
                     }
