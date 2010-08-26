@@ -7,11 +7,12 @@
             float radius = 50.0;
             int x, y, nx, ny;
             int delay = 16;
+            var starting = "peace";
             var wds = [];
             function blob(){
                 this.x = 0;
                 this.y = 0;
-                this.dist = 0;
+                this.radi = 0;
                 this.angle = 0;
                 this.word = "";
             }
@@ -39,31 +40,47 @@
 
                 background(100);
                 fill(0, 121,184);
+
                 stroke(255);
                 ellipse(x,y,radius,radius);
-                fill(0);
-                if (wds.length > 0){
-                    for (w=0;w<wds.length;w++){
-                        var wrd = wds[w];
 
-                        smooth();
-                        strokeWeight(1);
+                for (w=0;w<wds.length;w++){
+                    var wrd = wds[w];
 
-                        stroke(0);
-                        line(x, y, wrd.x, wrd.y);
+                    smooth();
+                    strokeWeight(1);
 
-                        fill(255);
-                        text(wrd.word, wrd.x, wrd.y);
+                    stroke(0);
+                    line(x, y, wrd.x, wrd.y);
 
-                        strokeWeight(15);
-                        point(wrd.x, wrd.y);
+                    fill(255);
+                    text(wrd.word, wrd.x, wrd.y);
+
+                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < 30.0 ) {
+                        stroke(64,187,128,100);
+                        console.log("mouse in range!!");
                     }
+
+                    strokeWeight(15);
+                    point(wrd.x, wrd.y);
                 }
             }
 
             void mousePressed(){
+
+                for (w=0;w<wds.length;w++){
+                    var wrd = wds[w];
+                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < 30.0 ) {
+                        starting = wrd.word;
+                        console.log("word changed : " + starting);
+                    }
+                }
+
                 wds = [];
-                var url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20thesaurus%20where%20key%3D%22PMrEy9mZefntqwh6iTDz%22%20and%20word%3D%22peace%22%20and%20language%3D%22en_US%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+                var url = "http://query.yahooapis.com/v1/public/yql" 
+                + "?q=select%20*%20from%20thesaurus%20where%20key%3D%22PMrEy9mZefntqwh6iTDz%22%20and%20word%3D%22" 
+                + starting
+                + "%22%20and%20language%3D%22en_US%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
 
                 $.getJSON(url, function(data){ 
                     var lst = data.query.results.response.list;
@@ -85,10 +102,10 @@
                             wrdangle = wrdangle + angle;
                             wds[w].angle = wrdangle;
 
-                            dist = wds[w].word.length * 20.0;
-                            wds[w].dist = dist;
-                            wds[w].x = x + dist * cos(wrdangle);
-                            wds[w].y = y + dist * sin(wrdangle);
+                            radi = wds[w].word.length * 20.0;
+                            wds[w].radi = radi;
+                            wds[w].x = x + radi * cos(wrdangle);
+                            wds[w].y = y + radi * sin(wrdangle);
                             console.log("my word : " + wds[w].word + " : " + wds[w].y + " : " + wds[w].x + " : " + wds[w].angle);
                         }
                     }
