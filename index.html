@@ -5,11 +5,13 @@
         <script type="text/javascript" src="./init.js"></script>
         <script type="application/processing">
             float radius = 50.0;
-            float maxradi = 20;
+            float maxradi = 30;
             int x, y, nx, ny;
             int delay = 16;
             var starting = "peace";
             var wds = [];
+            boolean dragging = false;
+
             function blob(){
                 this.x = 0;
                 this.y = 0;
@@ -46,43 +48,62 @@
                 stroke(255);
                 ellipse(x,y,radius,radius);
 
+                fill(255);
+                text(starting, x, y);
+
                 for (w=0;w<wds.length;w++){
                     var wrd = wds[w];
 
                     smooth();
-                    strokeWeight(1);
-
                     stroke(0);
-                    line(x, y, wrd.x, wrd.y);
+                    fill(255);
+                    strokeWeight(15);
+
+                    xx = wrd.x;
+                    yy = wrd.y;
 
                     if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ) {
                         rndx = random(-.5, 5);
                         rndy = random(-.5, 5);
 
                         fill(0, 102, 153);
-                        text(wrd.word, wrd.x + rndx, wrd.y + rndy);
-
                         stroke(64,187,128,100);
                         strokeWeight(20);
-                        point(wrd.x + rndx, wrd.y + rndy);
+                        
+                        xx = wrd.x + rndx;
+                        yy = wrd.y + rndy;
 
-                    } else {
-                        fill(255);
-                        text(wrd.word, wrd.x, wrd.y);
-
-                        strokeWeight(15);
-                        point(wrd.x, wrd.y);
+                        if (dragging){
+                            wrd.x = xx = mouseX;
+                            wrd.y = yy = mouseY;
+                        } 
                     }
+                    text(wrd.word, xx, yy);
+                    point(xx, yy);
+
+                    strokeWeight(2);
+                    line(x, y, xx, yy);
                 }
             }
 
-            void mousePressed(){
+            void mouseDragged(){
+                dragging = true;
+            }
 
+            void mouseReleased(){
+                dragging = false;
+            }
+
+            void mousePressed(){
                 for (w=0;w<wds.length;w++){
                     var wrd = wds[w];
                     if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ) {
-                        starting = wrd.word;
-                        console.log("word changed : " + starting);
+                       if ( mousePressed && mouseButton == RIGHT ) {
+                            starting = wrd.word;
+                            console.log("word changed : " + starting);
+                        } else if ( mousePressed && mouseButton == LEFT) {
+                            return;
+                        }
                     }
                 }
 
@@ -121,11 +142,6 @@
                     }
                 });
             }
-
-//            void mouseMoved(){
-  //              nx = mouseX;
-    //            ny = mouseY;
-      //      }
         </script>
     </head>
     <body>
