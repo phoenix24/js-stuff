@@ -8,6 +8,13 @@
             int x, y, nx, ny;
             int delay = 16;
             var wds = [];
+            function blob(){
+                this.x = 0;
+                this.y = 0;
+                this.dist = 0;
+                this.angle = 0;
+                this.word = "";
+            }
 
             void setup(){
                 size(900, 650);
@@ -20,7 +27,9 @@
                 
                 PFont fontA = loadFont("Arial");
                 textFont(fontA, 32);
-                textAlign(CENTER);
+
+                //removing center alignment so that we can add handlers.
+                //textAlign(CENTER);
             }
 
             void draw(){
@@ -34,23 +43,20 @@
                 ellipse(x,y,radius,radius);
                 fill(0);
                 if (wds.length > 0){
-                    int angle = TWO_PI / wds.length;
-                    int wrdangle = 0;
                     for (w=0;w<wds.length;w++){
-                        int dist = wds[w].length * 20.0;
-                        int xx = dist * cos(wrdangle);
-                        int yy = dist * sin(wrdangle);
-                        //console.log(wds.length + ", " + angle + ", " + xx + ", "  + yy );
-                        wrdangle = wrdangle + angle;
+                        var wrd = wds[w];
+
                         smooth();
                         strokeWeight(1);
-                        stroke(0);
-                        line(x, y, x+xx, y+yy);
-                        fill(255);
-                        text(wds[w], x+xx, y+yy);
 
-                        strokeWeight(5);
-                        point(x+xx,y+yy);
+                        stroke(0);
+                        line(x, y, wrd.x, wrd.y);
+
+                        fill(255);
+                        text(wrd.word, wrd.x, wrd.y);
+
+                        strokeWeight(15);
+                        point(wrd.x, wrd.y);
                     }
                 }
             }
@@ -65,9 +71,25 @@
                         for (i=0; i<lst.length; i++){
                             words = lst[i].synonyms.split("|");
                             for (w=0; w<words.length; w++) {
-                                wds.push(words[w]);
-                                //console.log(wds);
+                                var wwd = new blob();
+                                wwd.word = words[w];
+                                wds.push(wwd);
+                                //console.log("my word : " + wwd.word);
                             } 
+                        }
+                    }
+                    if (wds.length > 0){
+                        int angle = TWO_PI / wds.length;
+                        int wrdangle = 0;
+                        for (w=0;w<wds.length;w++){
+                            wrdangle = wrdangle + angle;
+                            wds[w].angle = wrdangle;
+
+                            dist = wds[w].word.length * 20.0;
+                            wds[w].dist = dist;
+                            wds[w].x = x + dist * cos(wrdangle);
+                            wds[w].y = y + dist * sin(wrdangle);
+                            console.log("my word : " + wds[w].word + " : " + wds[w].y + " : " + wds[w].x + " : " + wds[w].angle);
                         }
                     }
                 });
