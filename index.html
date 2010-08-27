@@ -46,6 +46,7 @@
 
             void setup(){
                 size(900, 650);
+                smooth();
                 strokeWeight(10);
                 frameRate(30);
                 x = width / 2;
@@ -93,41 +94,28 @@
 
             function drawWords(){
                 //textAlign(CENTER);
-
-                for (w=0;w<wds.length;w++){
-                    var wrd = wds[w];
-                    wrd = updateXY(wrd);
-
-                    smooth();
+                wds.forEach(function(wrd){
                     stroke(0);
                     fill(0);
 
-                    xx = wrd.x;
-                    yy = wrd.y;
-
+                    wrd = updateXY(wrd);
                     if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ) {
-                        rndx = random(-.5, 5);
-                        rndy = random(-.5, 5);
-
                         fill(0, 102, 153);
                         stroke(64,187,128,100);
-                        
-                        //xx = wrd.x + rndx;
-                        //yy = wrd.y + rndy;
-                        blobradi = rndy;
 
+                        blobradi = random(-.5, 5);
                         if (dragging){
-                            wrd.x = xx = mouseX;
-                            wrd.y = yy = mouseY;
+                            wrd.x =  mouseX;
+                            wrd.y = mouseY;
                         }
                     }
                     strokeWeight(5 + blobradi);
-                    text(wrd.word, xx, yy);
-                    point(xx, yy);
+                    text(wrd.word, wrd.x, wrd.y);
+                    point(wrd.x, wrd.y);
 
                     strokeWeight(2);
-                    line(x, y, xx, yy);
-                }
+                    line(x, y, wrd.x, wrd.y);
+                });
             }
 
             void mouseDragged(){
@@ -193,30 +181,24 @@
 
                 $.getJSON(url, function(data){ 
                     var lst = data.query.results.response.list;
-                    for (i=0;i<lst.length;i++){
-                        for (i=0; i<lst.length; i++){
-                            words = lst[i].synonyms.split("|");
-                            for (w=0; w<words.length; w++) {
-                                var word = cleanWord(words[w]);
-                                if (word === "") {
-                                    //not matching word.
-                                    continue;
-                                }
+                    for (i=0; i<lst.length; i++){
+                        words = lst[i].synonyms.split("|");
+                        for (w=0; w<words.length; w++){
+                            var word = cleanWord(words[w]);
+                            if (word){
                                 var wwd = new blob();
                                 wwd.word = word;
+                                wwd.maxradi = word.length * 20.0;
                                 wds.push(wwd);
-                                //console.log("my word : " + wwd.word);
-                            } 
-                        }
+                            }
+                        } 
                     }
-                        int angle = TWO_PI / wds.length;
-                        int wrdangle = angle;
-                        for (w=0;w<wds.length;w++){
-                            wds[w].angle = wrdangle;
-                            wds[w].animating = true;
-                            wds[w].maxradi = wds[w].word.length * 20.0;
-                            wrdangle = wrdangle + angle;
-                        }
+                    int angle = TWO_PI / wds.length;
+                    int wrdangle = angle;
+                    wds.forEach(function(wrd){
+                        wrd.angle = wrdangle;
+                        wrdangle = wrdangle + angle;
+                    });
                 });
             }
         </script>
