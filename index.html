@@ -1,5 +1,6 @@
 <html>
     <head>
+        <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <script type="text/javascript" src="./processing-0.9.7.min.js"></script>
         <script type="text/javascript" src="./init.js"></script>
@@ -30,11 +31,8 @@
                 nx = x;
                 ny = y;
                 
-                PFont fontA = loadFont("Arial");
+                PFont fontA = loadFont("Yanone Kaffeesatz");
                 textFont(fontA, 32);
-
-                //removing center alignment so that we can add handlers.
-                //textAlign(CENTER);
             }
 
             void draw(){
@@ -46,12 +44,15 @@
                 fill(0, 121,184);
 
                 stroke(255);
-                ellipse(x,y,radius,radius);
+//                ellipse(x,y,radius,radius);
 
+                textAlign(CENTER);
                 drawWords();
-
                 fill(255);
                 text(starting, x, y);
+
+                textAlign(LEFT);
+                text("click to start", 0, 30);
             }
 
             function drawWords(){
@@ -150,6 +151,6 @@
         </script>
     </head>
     <body>
-        <canvas width="800px" height="600px"></canvas>
+        <canvas class="canvas" width="800px" height="600px"></canvas>
     </body>
 </html>
