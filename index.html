@@ -14,6 +14,8 @@
             var selection = "(synonym)";
             var wds = [], help = [], hlparr = ["restart", "synonym", "antonym"];
             boolean dragging = false;
+            boolean level = 0;
+            PFont fontA;
 
             function blob(){
                 this.x = 0;
@@ -42,6 +44,9 @@
             function initStyle(){
                 fill(0);
                 strokeWeight(10);
+
+                fontA = loadFont("Yanone Kaffeesatz");
+                textFont(fontA, 32);
                 textAlign(CENTER);
             }
 
@@ -55,9 +60,6 @@
                 nx = x;
                 ny = y;
                 
-                PFont fontA = loadFont("Yanone Kaffeesatz");
-                textFont(fontA, 32);
-
                 init();
                 initStyle();
             }
@@ -100,19 +102,23 @@
                 wds.forEach(function(wrd){
                     stroke(0);
                     fill(0);
+                    textFont(fontA, 32);
 
                     wrd = updateXY(wrd);
+                    xtra = 0;
                     if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ) {
                         fill(#FFCC00);
                         stroke(64,187,128,100);
+                        textFont(fontA, 40);
 
                         blobradi = random(-.5, 5);
+                        xtra = 15;
                         if (dragging){
                             wrd.x =  mouseX;
                             wrd.y = mouseY;
                         }
                     }
-                    strokeWeight(5 + blobradi);
+                    strokeWeight(5 + blobradi + xtra);
                     text(wrd.word, wrd.x, wrd.y);
                     point(wrd.x, wrd.y);
 
@@ -131,10 +137,10 @@
 
             function cleanWord(word){
                 word = word.split(" ");
-                if (selection == "(antonym)" && selection == word[1]) {
+                if (selection == "(antonym)" && selection == word[1]){
                     return word[0];
                 }
-                if (selection == "(synonym)" && !word[1]) {
+                if (selection == "(synonym)" && !word[1]){
                     return word[0];
                 }
                 return "";
@@ -146,9 +152,9 @@
                     wrd.radi = wrd.radi + 5;
                     wrd.x = x + wrd.radi * cos(wrd.angle);
                     wrd.y = y + wrd.radi * sin(wrd.angle);
-                    return wrd;
+                } else {
+                    wrd.animating = false;
                 }
-                wrd.animating = false;
                 return wrd;
             }
 
@@ -156,10 +162,10 @@
                 for (w=0;w<wds.length;w++){
                     var wrd = wds[w];
                     if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ){
-                       if ( mousePressed && mouseButton == RIGHT ){
+                       if ( mousePressed && mouseButton == LEFT ){
                             starting = wrd.word;
                             console.log("word changed : " + starting);
-                        } else if ( mousePressed && mouseButton == LEFT){
+                        } else if ( mousePressed && mouseButton == RIGHT){
                             return;
                         }
                     }
