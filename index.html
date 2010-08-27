@@ -15,14 +15,15 @@
             var wds = [], help = [], hlparr = ["restart", "synonym", "antonym"];
             boolean dragging = false;
 
-
             function blob(){
                 this.x = 0;
                 this.y = 0;
                 this.radi = 0;
+                this.maxradi = 0;
                 this.angle = 0;
                 this.word = "";
                 this.wt = 15;
+                this.animating = true;
             }
 
             function init(){
@@ -46,7 +47,7 @@
             void setup(){
                 size(900, 650);
                 strokeWeight(10);
-                frameRate(15);
+                frameRate(30);
                 x = width / 2;
                 y = height / 2;
                 nx = x;
@@ -95,6 +96,7 @@
 
                 for (w=0;w<wds.length;w++){
                     var wrd = wds[w];
+                    wrd = updateXY(wrd);
 
                     smooth();
                     stroke(0);
@@ -146,6 +148,20 @@
                 }
                 return "";
             }
+
+            function updateXY(wrd){
+                if (wrd.radi < wrd.maxradi){
+                    wrd.animating = true;
+                    wrd.radi = wrd.radi + 5;
+                    wrd.x = x + wrd.radi * cos(wrd.angle);
+                    wrd.y = y + wrd.radi * sin(wrd.angle);
+                    return wrd;
+                }
+                //console.log("x:" + wrd.x + ",  y:" + wrd.y + ", maxradi:" + wrd.maxradi + ", radi:" + wrd.radi);
+                wrd.animating = false;
+                return wrd;
+            }
+
             void mousePressed(){
                 for (w=0;w<wds.length;w++){
                     var wrd = wds[w];
@@ -193,20 +209,14 @@
                             } 
                         }
                     }
-                    if (wds.length > 0){
                         int angle = TWO_PI / wds.length;
-                        int wrdangle = 0;
+                        int wrdangle = angle;
                         for (w=0;w<wds.length;w++){
-                            wrdangle = wrdangle + angle;
                             wds[w].angle = wrdangle;
-
-                            radi = wds[w].word.length * 20.0;
-                            wds[w].radi = radi;
-                            wds[w].x = x + radi * cos(wrdangle);
-                            wds[w].y = y + radi * sin(wrdangle);
-                            console.log("my word : " + wds[w].word + " : " + wds[w].y + " : " + wds[w].x + " : " + wds[w].angle);
+                            wds[w].animating = true;
+                            wds[w].maxradi = wds[w].word.length * 20.0;
+                            wrdangle = wrdangle + angle;
                         }
-                    }
                 });
             }
         </script>
