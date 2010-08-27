@@ -24,6 +24,7 @@
                 this.word = "";
                 this.wt = 15;
                 this.animating = true;
+                this.color = 0;
             }
 
             function init(){
@@ -35,7 +36,7 @@
                     hlp.y = hlp.y + 30;
                     help.push(hlp);
                     hx = hx + hlp.word.length * 15;
-                })
+                });
             }
 
             function initStyle(){
@@ -87,6 +88,8 @@
                 initStyle();
 
                 help.forEach(function(hp){
+                    if (selection == "(" + hp.word + ")"){ hp.color = #FFCC00; }
+                    fill(hp.color);
                     text(hp.word, hp.x, hp.y);
                     point(hp.x, hp.y);
                 });
@@ -100,7 +103,7 @@
 
                     wrd = updateXY(wrd);
                     if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ) {
-                        fill(0, 102, 153);
+                        fill(#FFCC00);
                         stroke(64,187,128,100);
 
                         blobradi = random(-.5, 5);
@@ -145,7 +148,6 @@
                     wrd.y = y + wrd.radi * sin(wrd.angle);
                     return wrd;
                 }
-                //console.log("x:" + wrd.x + ",  y:" + wrd.y + ", maxradi:" + wrd.maxradi + ", radi:" + wrd.radi);
                 wrd.animating = false;
                 return wrd;
             }
@@ -153,22 +155,23 @@
             void mousePressed(){
                 for (w=0;w<wds.length;w++){
                     var wrd = wds[w];
-                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ) {
-                       if ( mousePressed && mouseButton == RIGHT ) {
+                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ){
+                       if ( mousePressed && mouseButton == RIGHT ){
                             starting = wrd.word;
                             console.log("word changed : " + starting);
-                        } else if ( mousePressed && mouseButton == LEFT) {
+                        } else if ( mousePressed && mouseButton == LEFT){
                             return;
                         }
                     }
                 }
                 for (w=0;w<help.length;w++){
                     var wrd = help[w];
-                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ) {
-                        if ( mousePressed && mouseButton == LEFT) {
+                    wrd.color = #000000;
+                    if (dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi){
+                        if (mousePressed && mouseButton == LEFT){
                             if (wrd.word == 'restart'){ starting = "peace"; }
-                            if (wrd.word == 'synonym'){ selection = "(synonym)"; }
-                            if (wrd.word == 'antonym'){ selection = "(antonym)"; }
+                            if (wrd.word == 'synonym'){ selection = "(synonym)"; wrd.color = #FFCC00; }
+                            if (wrd.word == 'antonym'){ selection = "(antonym)"; wrd.color = #FFCC00; }
                         }
                     }
                 }
