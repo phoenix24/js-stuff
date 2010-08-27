@@ -26,10 +26,14 @@
             }
 
             function init(){
+                var hx = 80;
                 hlparr.forEach(function(wrd){
                     hlp = new blob();
                     hlp.word = wrd;
+                    hlp.x = hlp.x + hx;
+                    hlp.y = hlp.y + 30;
                     help.push(hlp);
+                    hx = hx + hlp.word.length * 15;
                 })
             }
 
@@ -52,6 +56,7 @@
                 textFont(fontA, 32);
 
                 init();
+                initStyle();
             }
 
             void draw(){
@@ -79,13 +84,9 @@
             function drawHelp(){
                 initStyle();
 
-                hx = 80;
                 help.forEach(function(hp){
-                    xx = hp.x + hx;
-                    yy = hp.y + 30;
-                    text(hp.word, xx, yy);
-                    point(xx, yy);
-                    hx = hx + hp.word.length * 15;
+                    text(hp.word, hp.x, hp.y);
+                    point(hp.x, hp.y);
                 });
             }
 
@@ -154,6 +155,16 @@
                             console.log("word changed : " + starting);
                         } else if ( mousePressed && mouseButton == LEFT) {
                             return;
+                        }
+                    }
+                }
+                for (w=0;w<help.length;w++){
+                    var wrd = help[w];
+                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ) {
+                        if ( mousePressed && mouseButton == LEFT) {
+                            if (wrd.word == 'restart'){ starting = "peace"; }
+                            if (wrd.word == 'synonym'){ selection = "(synonym)"; }
+                            if (wrd.word == 'antonym'){ selection = "(antonym)"; }
                         }
                     }
                 }
