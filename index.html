@@ -190,25 +190,24 @@
 
                 if ( mousePressed && mouseButton == LEFT ){
                     clstr.forEach(function(cltr){
-                    wds = cltr.wds;
-                    x = cltr.x;
-                    y = cltr.y;
+                        wds = cltr.wds;
                         wds.forEach(function(wrd){
-                            if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ){
-                                if (starting == wrd.word) { return; } else { starting = wrd.word; }
+                            if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi && starting !== wrd.word){
+                                starting = wrd.word;
                                 matched = true;
                             }
                         });
                     });
-                } else { return; }
+                } else if ( mousePressed && mouseButton == RIGHT ){ return; }
 
                 help.forEach(function(wrd){
                     wrd.color = #000000;
                     if (dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi){
                         if (mousePressed && mouseButton == LEFT){
-                            if (wrd.word == 'restart'){ starting = "peace"; reset(); }
+                            if (wrd.word == 'restart'){ starting = "peace"; }
                             if (wrd.word == 'synonym'){ selection = "(synonym)"; wrd.color = #FFCC00; }
                             if (wrd.word == 'antonym'){ selection = "(antonym)"; wrd.color = #FFCC00; }
+                            reset();
                             matched = true;
                             console.log("matched : " + matched);
                         }
