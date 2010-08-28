@@ -84,12 +84,14 @@
                 wd.x = x;
                 wd.y = y;
                 wds.push(wd);
+
+                starting = wd;
                 
                 //setting up the clusters here.
                 cltr = new cluster();
                 cltr.x = x;
                 cltr.y = y;
-                cltr.root = "peace";
+                cltr.root = wd;
                 cltr.wds = wds;
                 clstr.push(cltr);
             }
@@ -187,17 +189,15 @@
             }
 
             void mousePressed(){
-                var xx, yy;
                 boolean matched = false;
 
                 if ( mousePressed && mouseButton == LEFT ){
                     clstr.forEach(function(cltr){
                         wds = cltr.wds;
                         wds.forEach(function(wrd){
-                            if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi && starting !== wrd.word && 
-                                (cltr.root !== wrd.word || clstr.length == 1) ){
-                                xx = wrd.x, yy = wrd.y;
-                                starting = wrd.word;
+                            if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi && starting.word !== wrd.word && 
+                                (cltr.root.word !== wrd.word || clstr.length == 1) ){
+                                starting = wrd;
                                 matched = true;
                             }
                         });
@@ -206,11 +206,10 @@
                     help.forEach(function(wrd){
                         wrd.color = #000000;
                         if (dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi){
-                            if (wrd.word == 'restart'){ starting = "peace"; }
+                            //if (wrd.word == 'restart'){ starting = "peace"; }
                             if (wrd.word == 'synonym'){ selection = "(synonym)"; wrd.color = #FFCC00; }
                             if (wrd.word == 'antonym'){ selection = "(antonym)"; wrd.color = #FFCC00; }
                             reset();
-                            xx = width / 2, yy = height / 2;
                             matched = true;
                         }
                     });
@@ -220,16 +219,13 @@
                 //root word has'nt changed, lets return.
                 if (!matched) return;
 
-                //resetting the root co-ordinates.
-                if (clstr.length == 0) { xx = x; yy = y; }
-
                 //lets reduce some clutter; popping out the current root.
                 if (clstr.length > 2) { clstr.shift(); }
 
                 var wds = [];
                 var url = "http://query.yahooapis.com/v1/public/yql"
                 + "?q=select%20*%20from%20thesaurus%20where%20key%3D%22PMrEy9mZefntqwh6iTDz%22%20and%20word%3D%22"
-                + starting
+                + starting.word
                 + "%22%20and%20language%3D%22en_US%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
 
                 $.getJSON(url, function(data){ 
@@ -256,8 +252,8 @@
 
                 //setting up the clusters here.
                 cltr = new cluster();
-                cltr.x = xx;
-                cltr.y = yy;
+                cltr.x = starting.x;
+                cltr.y = starting.y;
                 cltr.root = starting;
                 cltr.wds = wds;
                 clstr.push(cltr);
