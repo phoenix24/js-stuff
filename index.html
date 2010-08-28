@@ -189,16 +189,13 @@
                     wds = cltr.wds;
                     x = cltr.x;
                     y = cltr.y;
-                    wds.forEach(function(wrd){
-                        //for (w=0;w<wds.length;w++){
-                        //var wrd = wds[w];
-                        if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ){
-                            if (starting == wrd.word) { return; } else { starting = wrd.word; console.log("word changed : " + starting); }
-                            if (clstr.length == 0) { xx = x; yy = y; }
-                            matched = true;
-                            //break;
-                        }
-                    });
+                        wds.forEach(function(wrd){
+                            if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ){
+                                if (starting == wrd.word) { return; } else { starting = wrd.word; }
+                                if (clstr.length == 0) { xx = x; yy = y; }
+                                matched = true;
+                            }
+                        });
                     });
                 } else { return; }
 
