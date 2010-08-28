@@ -12,7 +12,7 @@
             int delay = 16;
             var starting = "";
             var selection = "(synonym)";
-            var wds = [], clstr = [], help = [], hlparr = ["restart", "synonym", "antonym"];
+            var clstr = [], help = [], hlparr = ["restart", "synonym", "antonym"];
             boolean dragging = false;
             boolean level = 0;
             PFont fontA;
@@ -73,7 +73,7 @@
             }
 
             function reset(){
-                wds = [];
+                var wds = [];
                 clstr = [];
                 x = width / 2;
                 y = height / 2;
@@ -121,7 +121,7 @@
             function drawWords(){
                 //textAlign(CENTER);
                 clstr.forEach(function(cltr){
-                    wds = cltr.wds;
+                    var wds = cltr.wds;
                     x = cltr.x;
                     y = cltr.y;
                 wds.forEach(function(wrd){
@@ -217,7 +217,7 @@
                 if (!matched) return;
                 if (clstr.length == 1 || clstr.length == 0) { xx = x; yy = y; }
 
-                wds = [];
+                var wds = [];
                 var url = "http://query.yahooapis.com/v1/public/yql" 
                 + "?q=select%20*%20from%20thesaurus%20where%20key%3D%22PMrEy9mZefntqwh6iTDz%22%20and%20word%3D%22" 
                 + starting
