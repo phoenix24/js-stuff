@@ -69,11 +69,15 @@
                 
                 init();
                 initStyle();
-                restart();
+                reset();
             }
 
-            function restart(){
+            function reset(){
                 wds = [];
+                clstr = [];
+                x = width / 2;
+                y = height / 2;
+
                 var wd = new blob();
                 wd.word = "peace";
                 wd.x = x;
@@ -192,7 +196,6 @@
                         wds.forEach(function(wrd){
                             if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ){
                                 if (starting == wrd.word) { return; } else { starting = wrd.word; }
-                                if (clstr.length == 0) { xx = x; yy = y; }
                                 matched = true;
                             }
                         });
@@ -203,14 +206,17 @@
                     wrd.color = #000000;
                     if (dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi){
                         if (mousePressed && mouseButton == LEFT){
-                            if (wrd.word == 'restart'){ starting = "peace"; restart(); }
+                            if (wrd.word == 'restart'){ starting = "peace"; reset(); }
                             if (wrd.word == 'synonym'){ selection = "(synonym)"; wrd.color = #FFCC00; }
                             if (wrd.word == 'antonym'){ selection = "(antonym)"; wrd.color = #FFCC00; }
                             matched = true;
+                            console.log("matched : " + matched);
                         }
                     }
                 });
+
                 if (!matched) return;
+                if (clstr.length == 1 || clstr.length == 0) { xx = x; yy = y; }
 
                 wds = [];
                 var url = "http://query.yahooapis.com/v1/public/yql" 
