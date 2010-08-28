@@ -10,14 +10,21 @@
             float blobradi = 2;
             int x, y, nx, ny;
             int delay = 16;
-            var starting = "peace";
+            var starting = "";
             var selection = "(synonym)";
-            var wds = [], help = [], hlparr = ["restart", "synonym", "antonym"];
+            var wds = [], clstr = [], help = [], hlparr = ["restart", "synonym", "antonym"];
             boolean dragging = false;
             boolean level = 0;
             PFont fontA;
 
+            function cluster(){
+                this.level = 0;
+                this.x = 0;
+                this.y = 0;
+            }
+
             function blob(){
+                this.cluster = 0;
                 this.x = 0;
                 this.y = 0;
                 this.radi = 0;
@@ -62,6 +69,23 @@
                 
                 init();
                 initStyle();
+                restart();
+            }
+
+            function restart(){
+                wds = [];
+                var wd = new blob();
+                wd.word = "peace";
+                wd.x = x;
+                wd.y = y;
+                wds.push(wd);
+                
+                //setting up the clusters here.
+                cltr = new cluster();
+                cltr.x = x;
+                cltr.y = y;
+                cltr.wds = wds;
+                clstr.push(cltr);
             }
 
             void draw(){
@@ -76,7 +100,7 @@
                 //ellipse(x,y,radius,radius);
 
                 drawWords();
-                drawTargetWord();
+                //drawTargetWord();
                 drawHelp();
             }
 
@@ -99,6 +123,10 @@
 
             function drawWords(){
                 //textAlign(CENTER);
+                clstr.forEach(function(cltr){
+                    wds = cltr.wds;
+                    x = cltr.x;
+                    y = cltr.y;
                 wds.forEach(function(wrd){
                     stroke(0);
                     fill(0);
@@ -125,6 +153,7 @@
                     strokeWeight(2);
                     line(x, y, wrd.x, wrd.y);
                 });
+            });
             }
 
             void mouseDragged(){
@@ -159,28 +188,39 @@
             }
 
             void mousePressed(){
-                for (w=0;w<wds.length;w++){
-                    var wrd = wds[w];
-                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ){
-                       if ( mousePressed && mouseButton == LEFT ){
-                            starting = wrd.word;
-                            console.log("word changed : " + starting);
-                        } else if ( mousePressed && mouseButton == RIGHT){
-                            return;
+                var xx = mouseX, yy = mouseY;
+                boolean matched = false;
+
+                if ( mousePressed && mouseButton == LEFT ){
+                    clstr.forEach(function(cltr){
+                    wds = cltr.wds;
+                    x = cltr.x;
+                    y = cltr.y;
+                    wds.forEach(function(wrd){
+                        //for (w=0;w<wds.length;w++){
+                        //var wrd = wds[w];
+                        if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ){
+                            if (starting == wrd.word) { return; } else { starting = wrd.word; console.log("word changed : " + starting); }
+                            if (clstr.length == 0) { xx = x; yy = y; }
+                            matched = true;
+                            //break;
                         }
-                    }
-                }
-                for (w=0;w<help.length;w++){
-                    var wrd = help[w];
+                    });
+                    });
+                } else { return; }
+
+                help.forEach(function(wrd){
                     wrd.color = #000000;
                     if (dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi){
                         if (mousePressed && mouseButton == LEFT){
-                            if (wrd.word == 'restart'){ starting = "peace"; }
+                            if (wrd.word == 'restart'){ starting = "peace"; restart(); }
                             if (wrd.word == 'synonym'){ selection = "(synonym)"; wrd.color = #FFCC00; }
                             if (wrd.word == 'antonym'){ selection = "(antonym)"; wrd.color = #FFCC00; }
+                            matched = true;
                         }
                     }
-                }
+                });
+                if (!matched) return;
 
                 wds = [];
                 var url = "http://query.yahooapis.com/v1/public/yql" 
@@ -209,6 +249,13 @@
                         wrdangle = wrdangle + angle;
                     });
                 });
+
+                //setting up the clusters here.
+                cltr = new cluster();
+                cltr.x = xx;
+                cltr.y = yy;
+                cltr.wds = wds;
+                clstr.push(cltr);
             }
         </script>
     </head>
