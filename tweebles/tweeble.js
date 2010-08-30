@@ -8,6 +8,8 @@ $(document).ready(function(){
     $.getJSON(url, function(json){
         $.each(json.results, function(i, twt){
             $("#result").append('<p id="twt"> <img src=' + twt.profile_image_url + '>'+twt.text+'</p>');
+            
+            console.log(twt);
         });
     }); 
     return false;
