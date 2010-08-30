@@ -6,6 +6,7 @@
         <script type="text/javascript" src="./vthesauras.js"></script>
         <!-- select * from thesaurus where key="PMrEy9mZefntqwh6iTDz" and word="showcase" and language="en_US"-->
         <style type="text/css">
+            * { font-family:"Yanone Kaffeesatz"}
             #status { display:none;}
         </style>
         <script type="application/processing">
@@ -17,8 +18,7 @@
             var starting = "";
             var selection = "(synonym)";
             var clstr = [], help = [], hlparr = ["restart", "synonym", "antonym"];
-            boolean dragging = false;
-            boolean level = 0;
+            var dragging = false;
             PFont fontA;
 
             function cluster(){
@@ -276,6 +276,9 @@
         </script>
     </head>
     <body>
+        <form id="twtform">
+          <input id="search" type="text" value="search">
+        </form>
         <canvas class="canvas" width="800px" height="600px"></canvas>
         <div id="status" style="font-size:20px;">loading...</div>
     </body>
