@@ -196,7 +196,7 @@
                     clstr.forEach(function(cltr){
                         wds = cltr.wds;
                         wds.forEach(function(wrd){
-                            if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi && starting.word !== wrd.word && 
+                            if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi && //starting.word !== wrd.word && 
                                 (cltr.root.word !== wrd.word || clstr.length == 1) ){
                                 starting = wrd;
                                 matched = true;
@@ -221,7 +221,7 @@
                 if (!matched) return;
 
                 //lets reduce some clutter; popping out the current root.
-                if (clstr.length > 2) { clstr.shift(); }
+                //if (clstr.length > 2) { clstr.shift(); }
 
                 var wds = [];
                 var url = "http://query.yahooapis.com/v1/public/yql"
@@ -243,21 +243,28 @@
                             }
                         } 
                     }
-                    int angle = TWO_PI / wds.length;
-                    int wrdangle = angle;
-                    wds.forEach(function(wrd){
-                        wrd.angle = wrdangle;
-                        wrdangle = wrdangle + angle;
-                    });
-                });
+                    
+                    //no words found, we dont add a dummy clustr.
+                    if (wds.length >= 1) {
+                        int angle = TWO_PI / wds.length;
+                        int wrdangle = angle;
+                        wds.forEach(function(wrd){
+                            wrd.angle = wrdangle;
+                            wrdangle = wrdangle + angle;
+                        });
 
-                //setting up the clusters here.
-                cltr = new cluster();
-                cltr.x = starting.x;
-                cltr.y = starting.y;
-                cltr.root = starting;
-                cltr.wds = wds;
-                clstr.push(cltr);
+                        //lets reduce some clutter; popping out the current root.
+                        if (clstr.length > 2) { clstr.shift(); }
+
+                        //setting up the clusters here.
+                        cltr = new cluster();
+                        cltr.x = starting.x;
+                        cltr.y = starting.y;
+                        cltr.root = starting;
+                        cltr.wds = wds;
+                        clstr.push(cltr);
+                    }
+                });
             }
         </script>
     </head>
