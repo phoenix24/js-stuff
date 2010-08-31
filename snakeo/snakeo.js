@@ -13,12 +13,9 @@ $(document).ready(function(){
     }
 
     function skblk() {
-        var el = $('.box');
-        var yy = $('.box').css('top');
-        var xx = $('.box').css('left');
-        xx = parseInt(xx.match(/\d*/)[0]);
-        yy = parseInt(yy.match(/\d*/)[0]);
-        
+        this.el = $('.box');
+        this.xx = parseInt(this.el.css('left').match(/\d*/)[0]);
+        this.yy = parseInt(this.el.css('top').match(/\d*/)[0]);
     }
 
     function init() {
@@ -35,12 +32,11 @@ $(document).ready(function(){
     $('body').bind('keydown', function(ev){
         var key = ev.keyCode || ev.which;
         var arrow = { 'left':37, 'right':39, 'up':38, 'down':40 };
-
-        var el = $('.box');
-        var yy = $('.box').css('top');
-        var xx = $('.box').css('left');
-        xx = parseInt(xx.match(/\d*/)[0]);
-        yy = parseInt(yy.match(/\d*/)[0]);
+        
+        var snk = new skblk();
+        var el = snk.el;
+        xx = snk.xx;
+        yy = snk.yy;
 
         if (key == arrow.left && xx - 10 > 0) {
             xx = xx - 10;
