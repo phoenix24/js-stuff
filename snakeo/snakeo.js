@@ -60,7 +60,6 @@ $(document).ready(function(){
         var el = snk.el;
         xx = snk.xx;
         yy = snk.yy;
-        //console.log("coord : " + xx + ", " + yy);
         
         if (k == 0) {
         if (key == arrow.left && xx - 10 > 0 && snke.dr !== 'right') {
@@ -94,13 +93,11 @@ $(document).ready(function(){
         snk.yy = yy;
         
         //plants.forEach(function(pt){
-        console.log("plants : " + plants.length);
         for (i=0; i<plants.length; i++){
             var pt = plants[i];
             var xd = Math.abs(pt.px - xx);
             var yd = Math.abs(pt.py - yy);
             if (xd < 10 && yd < 10){
-                console.log("match : " + pt.px + ":" + pt.py + ", " + xd + ":" + yd);
                 $(pt.el).remove();
                 plants.splice(i, 1);
                 var skblk = new snkblk();
@@ -120,7 +117,6 @@ $(document).ready(function(){
 
             el.css('top', snk.yy + "px" );
             el.css('left', snk.xx + "px" );
-            //console.log("tail : " + snk.xx + ", " + snk.yy);
         }
 
         }
