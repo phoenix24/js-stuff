@@ -9,7 +9,7 @@ $(document).ready(function(){
 
     var snakes = [];
     function snake() {
-        this.dr = 0;
+        this.dr = 'up';
         this.snkblks = [];
         var skblk = new snkblk();
         skblk.el.removeClass('box').addClass('head');
@@ -34,7 +34,7 @@ $(document).ready(function(){
         //add the snake to list of snakes
         snakes.push(ske);
 
-        for (i=0; i<20; i++){
+        for (i=0; i<10; i++){
             pt = new plant();
             pt.el.appendTo('body').css('top', pt.py + 'px').css('left', pt.px + 'px').css('display', 'block');
             plants.push(pt);
@@ -63,25 +63,29 @@ $(document).ready(function(){
         //console.log("coord : " + xx + ", " + yy);
         
         if (k == 0) {
-        if (key == arrow.left && xx - 10 > 0) {
+        if (key == arrow.left && xx - 10 > 0 && snke.dr !== 'right') {
             xx = xx - 10;
             el.css('left', xx + "px" );
             moved = true;
+            snke.dr = 'left';
         }
-        if (key == arrow.right && xx + 10 < 900) {
+        if (key == arrow.right && xx + 10 < 900 && snke.dr !== 'left') {
             xx = xx + 10;
             el.css('left', xx + "px" );
             moved = true;
+            snke.dr = 'right';
         }
-        if (key == arrow.up && yy - 10 > 0) {
+        if (key == arrow.up && yy - 10 > 0 && snke.dr !== 'down') {
             yy = yy - 10;
             el.css('top', yy + "px" );
+            snke.dr = 'up';
             moved = true;
         }
-        if (key == arrow.down && yy + 10 < 600) {
+        if (key == arrow.down && yy + 10 < 600 && snke.dr !== 'up') {
             yy = yy + 10;
             el.css('top', yy + "px" );
             moved = true;
+            snke.dr = 'down';
         }
         if (moved == false ) return;
         snk.oxx = snk.xx;
@@ -90,6 +94,7 @@ $(document).ready(function(){
         snk.yy = yy;
         
         //plants.forEach(function(pt){
+        console.log("plants : " + plants.length);
         for (i=0; i<plants.length; i++){
             var pt = plants[i];
             var xd = Math.abs(pt.px - xx);
