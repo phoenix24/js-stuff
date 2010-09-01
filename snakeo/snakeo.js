@@ -4,7 +4,10 @@ $(document).ready(function(){
     function plant() {
         this.px = Math.floor(Math.random() * 900);
         this.py = Math.floor(Math.random() * 500);
-        this.el = $('.plant').clone();
+        this.el = $('.plant').clone().appendTo('body')
+                    .css('top', this.py + 'px')
+                    .css('left', this.px + 'px')
+                    .css('display', 'block');
     }
 
     var snakes = [];
@@ -36,7 +39,6 @@ $(document).ready(function(){
 
         for (i=0; i<10; i++){
             pt = new plant();
-            pt.el.appendTo('body').css('top', pt.py + 'px').css('left', pt.px + 'px').css('display', 'block');
             plants.push(pt);
         }
     }
@@ -104,6 +106,8 @@ $(document).ready(function(){
                 skblk.xx = snkblks[snkblks.length - 1].oxx;
                 skblk.yy = snkblks[snkblks.length - 1].oyy;
                 snkblks.push(skblk);
+            pt = new plant();
+            plants.push(pt);
             }
         };
         } else {
