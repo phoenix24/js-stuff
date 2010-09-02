@@ -2,8 +2,8 @@ $(document).ready(function(){
 
     var plants = [];
     function plant() {
-        this.px = Math.floor(Math.random() * 900);
-        this.py = Math.floor(Math.random() * 500);
+        this.px = Math.floor(Math.random() * 890) + 10;
+        this.py = Math.floor(Math.random() * 490) + 10;
         this.el = $('.plant').clone().appendTo('body')
                     .css('top', this.py + 'px')
                     .css('left', this.px + 'px')
@@ -64,25 +64,25 @@ $(document).ready(function(){
         yy = snk.yy;
         
         if (k == 0) {
-        if (key == arrow.left && xx - 10 > 0 && snke.dr !== 'right') {
+        if (key == arrow.left && xx - 10 > 0 && snke.dr !== 'right' || snakes.length != 1) {
             xx = xx - 10;
             el.css('left', xx + "px" );
             moved = true;
             snke.dr = 'left';
         }
-        if (key == arrow.right && xx + 10 < 900 && snke.dr !== 'left') {
+        if (key == arrow.right && xx + 10 < 900 && snke.dr !== 'left' || snakes.length != 1) {
             xx = xx + 10;
             el.css('left', xx + "px" );
             moved = true;
             snke.dr = 'right';
         }
-        if (key == arrow.up && yy - 10 > 0 && snke.dr !== 'down') {
+        if (key == arrow.up && yy - 10 > 0 && snke.dr !== 'down' || snakes.length != 1) {
             yy = yy - 10;
             el.css('top', yy + "px" );
             snke.dr = 'up';
             moved = true;
         }
-        if (key == arrow.down && yy + 10 < 600 && snke.dr !== 'up') {
+        if (key == arrow.down && yy + 10 < 600 && snke.dr !== 'up' || snakes.length != 1) {
             yy = yy + 10;
             el.css('top', yy + "px" );
             moved = true;
@@ -106,8 +106,8 @@ $(document).ready(function(){
                 skblk.xx = snkblks[snkblks.length - 1].oxx;
                 skblk.yy = snkblks[snkblks.length - 1].oyy;
                 snkblks.push(skblk);
-            pt = new plant();
-            plants.push(pt);
+       //     pt = new plant();
+         //   plants.push(pt);
             }
         };
         } else {
