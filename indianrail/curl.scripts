@@ -1,0 +1,7 @@
+fetch the schedule of a train numbered #2472
+ curl -d 'lccp_trn_no=2472&lccp_month=4&lccp_day=6&lccp_daycnt=0' http://www.indianrail.gov.in/cgi_bin/inet_trnpath_cgi.cgi -o schedule.html 
+
+fetch the trains list from #src->ndls #dest->bct #class->sl #day->6 #month->4
+ curl -d 'lccp_src_stncode=NDLS&lccp_dstn_stncode=BCT&lccp_classopt=SL&lccp_day=6&lccp_month=4&submit2:Get+Details&CurrentMonth=4&CurrentDate=19&CurrentYear=2006' http://www.indianrail.gov.in/cgi_bin/inet_srcdest_cgi_date.cgi -o trainslist.html 
+fetch fare between two stations
+ curl -d 'lccp_trndtl=2472+NDLSSWM+0NYYNYYN+&lccp_month=4&lccp_day=6&lccp_year=2010&lccp_age=ADULT_AGE&lccp_conc=ZZZZZZ&lccp_classopt=SL&lccp_enrtcode=NONE&lccp_viacode=NONE&lccp_disp_avl_flg=1&lccp_frclass1=ZZ&lccp_frclass2=ZZ&lccp_frclass3=ZZ&lccp_frclass4=ZZ&lccp_frclass5=ZZ&lccp_frclass6=ZZ&lccp_frclass7=ZZ&lccp_frclass8=ZZ&lccp_frclass9=ZZ&lccp_frcls10=ZZ' http://www.indianrail.gov.in/cgi_bin/inet_frenq_cgi1.cgi -o fare3.html 
