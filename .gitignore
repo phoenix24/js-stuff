@@ -1,0 +1,14 @@
+#ignore the following files.
+
+*.pyc
+*~
+.classpath
+.project
+.pydevproject
+.settings
+eclipse
+logs
+tmp
+public/designs
+war/WEB-INF/appengine-generated/
+precompiled

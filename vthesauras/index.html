@@ -1,0 +1,285 @@
+<html>
+    <head>
+        <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script type="text/javascript" src="./processing-0.9.7.min.js"></script>
+        <script type="text/javascript" src="./vthesauras.js"></script>
+        <!-- select * from thesaurus where key="PMrEy9mZefntqwh6iTDz" and word="showcase" and language="en_US"-->
+        <style type="text/css">
+            * { font-family:"Yanone Kaffeesatz"}
+            #status { display:none;}
+        </style>
+        <script type="application/processing">
+            float radius = 50.0;
+            float maxradi = 30;
+            float blobradi = 2;
+            int x, y, nx, ny;
+            int delay = 16;
+            var starting = "";
+            var selection = "(synonym)";
+            var clstr = [], help = [], hlparr = ["restart", "synonym", "antonym"];
+            var dragging = false;
+            PFont fontA;
+
+            function cluster(){
+                this.x = 0;
+                this.y = 0;
+                this.root = "";
+                this.wds = [];
+            }
+
+            function blob(){
+                this.cluster = 0;
+                this.x = 0;
+                this.y = 0;
+                this.radi = 0;
+                this.maxradi = 0;
+                this.angle = 0;
+                this.word = "";
+                this.wt = 15;
+                this.animating = true;
+                this.color = 0;
+            }
+
+            function init(){
+                var hx = 80;
+                hlparr.forEach(function(wrd){
+                    hlp = new blob();
+                    hlp.word = wrd;
+                    hlp.x = hlp.x + hx;
+                    hlp.y = hlp.y + 30;
+                    help.push(hlp);
+                    hx = hx + hlp.word.length * 15;
+                });
+            }
+
+            function initStyle(){
+                fill(0);
+                strokeWeight(10);
+
+                fontA = loadFont("Yanone Kaffeesatz");
+                textFont(fontA, 32);
+                textAlign(CENTER);
+            }
+
+            void setup(){
+                size(900, 650);
+                smooth();
+                strokeWeight(10);
+                frameRate(30);
+                x = width / 2;
+                y = height / 2;
+                nx = x;
+                ny = y;
+                
+                init();
+                initStyle();
+                reset();
+            }
+
+            function reset(){
+                var wds = [];
+                clstr = [];
+                x = width / 2;
+                y = height / 2;
+
+                var wd = new blob();
+                wd.word = "peace";
+                wd.x = x;
+                wd.y = y;
+                wds.push(wd);
+
+                starting = wd;
+                
+                //setting up the clusters here.
+                cltr = new cluster();
+                cltr.x = x;
+                cltr.y = y;
+                cltr.root = wd;
+                cltr.wds = wds;
+                clstr.push(cltr);
+            }
+
+            void draw(){
+                radius = radius + sin(frameCount/4);
+                x += (nx-x)/delay;
+                y += (ny-y)/delay;
+
+                background(255);
+                fill(0);
+
+                //stroke(255);
+                //ellipse(x,y,radius,radius);
+
+                drawWords();
+                drawHelp();
+            }
+
+            function drawHelp(){
+                initStyle();
+
+                help.forEach(function(hp){
+                    if (selection == "(" + hp.word + ")"){ hp.color = #FFCC00; }
+                    fill(hp.color);
+                    text(hp.word, hp.x, hp.y);
+                    point(hp.x, hp.y);
+                });
+            }
+
+            function drawWords(){
+                //textAlign(CENTER);
+                clstr.forEach(function(cltr){
+                    var wds = cltr.wds;
+                    x = cltr.x;
+                    y = cltr.y;
+                wds.forEach(function(wrd){
+                    stroke(0);
+                    fill(0);
+                    textFont(fontA, 32);
+
+                    wrd = updateXY(wrd);
+                    xtra = 0;
+                    if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi ) {
+                        fill(#FFCC00);
+                        stroke(64,187,128,100);
+                        textFont(fontA, 40);
+
+                        blobradi = random(-.5, 5);
+                        xtra = 15;
+                        if (dragging){
+                            wrd.x =  mouseX;
+                            wrd.y = mouseY;
+                        }
+                    }
+                    strokeWeight(5 + blobradi + xtra);
+                    text(wrd.word, wrd.x, wrd.y);
+                    point(wrd.x, wrd.y);
+
+                    strokeWeight(2);
+                    line(x, y, wrd.x, wrd.y);
+                });
+            });
+            }
+
+            void mouseDragged(){
+                dragging = true;
+            }
+
+            void mouseReleased(){
+                dragging = false;
+            }
+
+            function cleanWord(word){
+                word = word.split(" ");
+                if (selection == "(antonym)" && selection == word[1]){
+                    return word[0];
+                }
+                if (selection == "(synonym)" && !word[1]){
+                    return word[0];
+                }
+                return "";
+            }
+
+            function updateXY(wrd){
+                if (wrd.radi < wrd.maxradi){
+                    wrd.animating = true;
+                    wrd.radi = wrd.radi + 5;
+                    wrd.x = x + wrd.radi * cos(wrd.angle);
+                    wrd.y = y + wrd.radi * sin(wrd.angle);
+                } else {
+                    wrd.animating = false;
+                }
+                return wrd;
+            }
+
+            void mousePressed(){
+                boolean matched = false;
+
+                if ( mousePressed && mouseButton == LEFT ){
+                    clstr.forEach(function(cltr){
+                        wds = cltr.wds;
+                        wds.forEach(function(wrd){
+                            if ( dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi && //starting.word !== wrd.word && 
+                                (cltr.root.word !== wrd.word || clstr.length == 1) ){
+                                starting = wrd;
+                                matched = true;
+                            }
+                        });
+                    });
+
+                    help.forEach(function(wrd){
+                        wrd.color = #000000;
+                        if (dist(wrd.x,wrd.y, mouseX,mouseY) < maxradi){
+                            //if (wrd.word == 'restart'){ starting = "peace"; }
+                            if (wrd.word == 'synonym'){ selection = "(synonym)"; wrd.color = #FFCC00; }
+                            if (wrd.word == 'antonym'){ selection = "(antonym)"; wrd.color = #FFCC00; }
+                            reset();
+                            matched = true;
+                        }
+                    });
+
+                } else if ( mousePressed && mouseButton == RIGHT ){ return; }
+
+                //root word has'nt changed, lets return.
+                if (!matched) return;
+
+                //lets reduce some clutter; popping out the current root.
+                //if (clstr.length > 2) { clstr.shift(); }
+
+                var wds = [];
+                var url = "http://query.yahooapis.com/v1/public/yql"
+                + "?q=select%20*%20from%20thesaurus%20where%20key%3D%22PMrEy9mZefntqwh6iTDz%22%20and%20word%3D%22"
+                + starting.word
+                + "%22%20and%20language%3D%22en_US%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+
+                $("#status").css("display", "block");
+                console.log("loading.. ");
+
+                $.getJSON(url, function(data){ 
+                    var lst = data.query.results.response.list;
+                    for (i=0; i<lst.length; i++){
+                        words = lst[i].synonyms.split("|");
+                        for (w=0; w<words.length; w++){
+                            var word = cleanWord(words[w]);
+                            if (word){
+                                var wwd = new blob();
+                                wwd.word = word;
+                                wwd.maxradi = word.length * 20.0;
+                                wds.push(wwd);
+                            }
+                        } 
+                    }
+                    
+                    //no words found, we dont add a dummy clustr.
+                    if (wds.length >= 1) {
+                        int angle = TWO_PI / wds.length;
+                        int wrdangle = angle;
+                        wds.forEach(function(wrd){
+                            wrd.angle = wrdangle;
+                            wrdangle = wrdangle + angle;
+                        });
+
+                        //lets reduce some clutter; popping out the current root.
+                        if (clstr.length > 2) { clstr.shift(); }
+
+                        //setting up the clusters here.
+                        cltr = new cluster();
+                        cltr.x = starting.x;
+                        cltr.y = starting.y;
+                        cltr.root = starting;
+                        cltr.wds = wds;
+                        clstr.push(cltr);
+                    }
+                    $("#status").css("display", "none");
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <form id="twtform">
+          <input id="search" type="text" value="search">
+        </form>
+        <canvas class="canvas" width="800px" height="600px"></canvas>
+        <div id="status" style="font-size:20px;">loading...</div>
+    </body>
+</html>
