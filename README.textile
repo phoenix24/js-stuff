@@ -1,7 +1,0 @@
-h3. A collection of html5/js/css3 experiments I have been doing.
-
-#vthesausras
-#tweebles
-#jello-balls
-#wireframes
-#tower-o-defence!
